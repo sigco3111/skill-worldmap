@@ -1,0 +1,400 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+  background: #0a0e1a;
+  font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+  color: #e0e0e0;
+  user-select: none;
+}
+
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  cursor: grab;
+}
+
+#app.grabbing {
+  cursor: grabbing;
+}
+
+/* ── Top Bar ── */
+#top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: linear-gradient(180deg, rgba(10,14,26,0.95) 0%, rgba(10,14,26,0) 100%);
+  pointer-events: none;
+}
+
+#top-bar > * {
+  pointer-events: auto;
+}
+
+#top-bar h1 {
+  font-size: 1.4rem;
+  background: linear-gradient(135deg, #00d4ff, #7b2fff, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  letter-spacing: 1px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.controls button {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #ccc;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+
+.controls button:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* ── Map Container ── */
+#map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+/* ── Regions (continents) ── */
+.region {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.15;
+  filter: blur(60px);
+  transition: opacity 0.5s;
+}
+
+.region-label {
+  position: absolute;
+  font-size: 2rem;
+  font-weight: 800;
+  opacity: 0.12;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 0 30px currentColor;
+}
+
+/* ── Skill Nodes ── */
+.skill-node {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  animation: float 4s ease-in-out infinite;
+}
+
+.skill-node:hover {
+  transform: scale(1.5) !important;
+  z-index: 100;
+}
+
+.skill-node .node-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid;
+  opacity: 0.5;
+  animation: pulse-ring 3s ease-in-out infinite;
+}
+
+.skill-node .node-label {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  white-space: nowrap;
+  color: rgba(255,255,255,0.7);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.skill-node:hover .node-label {
+  opacity: 1;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+/* ── Connection Lines (SVG) ── */
+#connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+#connections line {
+  stroke-width: 1;
+  opacity: 0.15;
+}
+
+/* ── Tooltip ── */
+#tooltip {
+  position: fixed;
+  z-index: 200;
+  background: rgba(15, 20, 40, 0.95);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 12px 16px;
+  max-width: 280px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+#tooltip.visible {
+  opacity: 1;
+}
+
+#tooltip .tt-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+#tooltip .tt-category {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.6;
+  margin-bottom: 6px;
+}
+
+#tooltip .tt-desc {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+/* ── Detail Panel ── */
+#detail-panel {
+  position: fixed;
+  right: -400px;
+  top: 60px;
+  width: 360px;
+  max-height: calc(100vh - 80px);
+  background: rgba(15, 20, 40, 0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 24px;
+  z-index: 300;
+  transition: right 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow-y: auto;
+  backdrop-filter: blur(16px);
+  box-shadow: -8px 0 40px rgba(0,0,0,0.3);
+}
+
+#detail-panel.open {
+  right: 20px;
+}
+
+#detail-panel.hidden {
+  pointer-events: none;
+}
+
+#close-panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: #aaa;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+#close-panel:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+#panel-content .panel-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+#panel-content .panel-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+#panel-content .panel-cat {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+
+#panel-content .panel-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin-bottom: 16px;
+}
+
+#panel-content .panel-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+#panel-content .panel-skills .skill-tag {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  color: #ccc;
+}
+
+/* ── Minimap ── */
+#minimap {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 180px;
+  height: 120px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(10,14,26,0.8);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  overflow: hidden;
+}
+
+#minimap-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Legend ── */
+#legend {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(10,14,26,0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  max-width: 220px;
+}
+
+#legend h3 {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+#legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.legend-item:hover {
+  opacity: 1;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  #legend { display: none; }
+  #minimap { width: 120px; height: 80px; }
+  #detail-panel { width: calc(100vw - 40px); }
+  .region-label { font-size: 1.2rem; }
+  .skill-node { width: 28px; height: 28px; font-size: 14px; }
+}

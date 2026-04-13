@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🗺️ ICBM2 스킬 월드맵</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div id="app">
+    <header id="top-bar">
+      <h1>🗺️ ICBM2 스킬 월드맵</h1>
+      <div class="controls">
+        <button id="btn-zoom-in" title="확대">🔍+</button>
+        <button id="btn-zoom-out" title="축소">🔍−</button>
+        <button id="btn-reset" title="초기화">🏠</button>
+      </div>
+    </header>
+    <div id="tooltip"></div>
+    <div id="detail-panel" class="hidden">
+      <button id="close-panel">✕</button>
+      <div id="panel-content"></div>
+    </div>
+    <div id="minimap">
+      <canvas id="minimap-canvas"></canvas>
+    </div>
+    <div id="legend">
+      <h3>🗺️ 대륙 안내</h3>
+      <div id="legend-items"></div>
+    </div>
+  </div>
+  <script src="worldmap.js"></script>
+</body>
+</html>
