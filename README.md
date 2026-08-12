@@ -26,7 +26,7 @@ ICBM2의 모든 스킬을 게임 오픈월드처럼 인터랙티브하게 시각
 
 ## 🚀 배포
 
-[Vercel](https://skill-worldmap.vercel.app)에서 호스팅됩니다.
+[Vercel](https://sigco3111.github.io/skill-worldmap)에서 호스팅됩니다.
 
 ## 📄 구성
 
