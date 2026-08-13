@@ -2,6 +2,12 @@
 
 ICBM2의 모든 스킬을 게임 오픈월드처럼 인터랙티브하게 시각화한 웹 페이지입니다.
 
+## 🌐 라이브 데모
+
+**[🗺️ https://sigco3111.github.io/skill-worldmap/](https://sigco3111.github.io/skill-worldmap/)**
+
+GitHub Pages에서 호스팅됩니다. 별도 설치 없이 브라우저에서 바로 실행됩니다.
+
 ## 🗺️ 대륙 안내
 
 | 대륙 | 설명 |
@@ -24,10 +30,6 @@ ICBM2의 모든 스킬을 게임 오픈월드처럼 인터랙티브하게 시각
 - 🗺️ 우측 하단 미니맵
 - ✨ 진입 애니메이션 & 별 배경
 
-## 🚀 배포
-
-[Vercel](https://sigco3111.github.io/skill-worldmap)에서 호스팅됩니다.
-
 ## 📄 구성
 
 ```
@@ -35,3 +37,19 @@ index.html    — 메인 HTML
 style.css     — 스타일
 worldmap.js   — 월드맵 로직 & 데이터
 ```
+
+## 🛠 로컬 실행
+
+빌드 단계 없이 정적 파일 3개로 동작합니다.
+
+```bash
+git clone https://github.com/sigco3111/skill-worldmap.git
+cd skill-worldmap
+python3 -m http.server 8000   # 또는 npx serve
+# → http://localhost:8000
+```
+
+## 🚀 배포
+
+`main` 브랜치에 푸시 후 GitHub Actions가 `dist`를 빌드해 `gh-pages` 브랜치로 배포합니다.
+정적 사이트이므로 빌드 단계 없이 `index.html` / `style.css` / `worldmap.js` 3개 파일이 그대로 서빙됩니다.
